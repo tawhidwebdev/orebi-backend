@@ -68,16 +68,21 @@ const UserSchema = newSchema(
     },
     Policy: {
       type: Boolean,
-      require: [true, "Policy Missing!"],
     },
     Access_Tooken: {
       type: String,
-      require: [true, "Access Tooken Missing!"],
     },
-    Role: {
-      type: Array,
-      requare: [true, "Role Missing"],
+    role: {
+      type: String,
+      enum: ["admin", "user", "merchant"],
+      default:"user"
     },
+    refershToken: {
+      type: String
+    },
+    avatar: {
+      type: String
+    }
   },
   { timestamps: true }
 );
