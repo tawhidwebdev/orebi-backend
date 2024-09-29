@@ -48,7 +48,7 @@ const UserSchema = newSchema(
       max: [4, "Max Value 4 Character"],
       min: [4, "Min Value 4 Character"],
     },
-    Division: {
+    Post_Code: {
       type: String,
       require: [true, "Division Missing!"],
       trim: true,

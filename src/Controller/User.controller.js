@@ -8,11 +8,15 @@ const {ApiResponse} = require ('../utils/ApiResponse')
  * @param {{ }} res
  */
 
-const CreateUser = asyncHandler ((req, res)=>{
-  const {FirstName, Email_Adress, Telephone, Address1, Address2, City, Post_Code, Division, Distict, Password} = req?.body
-  console.log(FirstName, Email_Adress, Telephone, Address1, Address2, City, Post_Code, Division, Distict, Password );
-  
-})
+const CreateUser = async(req, res)=>{
+  try {
+    const {FirstName, LastName, Email_Adress, Telephone} = req.body
+    console.log(FirstName, LastName, Email_Adress, Telephone);
+    
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 
 module.exports = { CreateUser };
