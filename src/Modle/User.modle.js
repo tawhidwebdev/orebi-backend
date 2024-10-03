@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const UserSchema = newSchema(
+const UserSchema = new Schema(
   {
     FirstName: {
       type: String,
@@ -24,8 +24,8 @@ const UserSchema = newSchema(
       type: Number,
       require: [true, "Telephone Number Missing!"],
       unique: true,
-      max: [11, "Max Value 11 Character"],
-      min: [9, "Min Value 9 Character"],
+      // max: [12, "Max Value 11 Character"],
+      // min: [9, "Min Value 9 Character"],
     },
     Address1: {
       type: String,
@@ -34,7 +34,6 @@ const UserSchema = newSchema(
     },
     Address2: {
       type: String,
-      require: [true, "Address2 Missing!"],
       trim: true,
     },
     City: {
@@ -45,10 +44,10 @@ const UserSchema = newSchema(
     Post_Code: {
       type: Number,
       require: [true, "Post Code Missing!"],
-      max: [4, "Max Value 4 Character"],
-      min: [4, "Min Value 4 Character"],
+      // max: [5, "Max Value 4 Character"],
+      // min: [4, "Min Value 4 Character"],
     },
-    Post_Code: {
+    Division: {
       type: String,
       require: [true, "Division Missing!"],
       trim: true,
@@ -87,5 +86,5 @@ const UserSchema = newSchema(
   { timestamps: true }
 );
 
-const usermodel = mongoose.model('uiser', UserSchema)
+const usermodel = mongoose.model('user', UserSchema)
 module.exports = {usermodel}

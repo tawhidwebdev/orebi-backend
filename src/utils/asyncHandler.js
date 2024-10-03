@@ -3,11 +3,10 @@ const { ApiError } = require("./ApiError");
 const asyncHandler = (fun = ()=>{}) => {
   return async (req, res, next) => {
     try {
-      await (req, res, next);
+      await fun(req, res, next)
     } catch (error) {
-      false, null, 500, "Async Handler Error" + error;
+      new ApiError(false, null, 500, "Async handler error : "+error )
     }
-  };
-};
-
+  }
+}
 module.exports = {asyncHandler}
