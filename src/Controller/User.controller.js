@@ -3,6 +3,7 @@ const { usermodel } = require("../Modle/User.modle");
 const { ApiError } = require("../utils/ApiError");
 const { ApiResponse } = require("../utils/ApiResponse");
 const { EmailChecker } = require("../utils/EmailChecker");
+const {PasswordChecker} = require("../utils/PasswordChecker")
 /**
  * todo: CreateUser controller implement
  * @param {{req.body}} req
@@ -78,6 +79,11 @@ const CreateUser = asyncHandler(async (req, res) => {
       return res
         .status(404)
         .json(new ApiError(false, null, 400, `Password is required`));
+    }
+    if (!PasswordChecker(Password)) {
+      return res
+        .status(404)
+        .json(new ApiError(false, null, 400, `Minimum eight and maximum twenty characters, at least one upper-case letter, one lower-case letter, one number, and one special character`));
     }
     // Check if user alrady exist or not
     const ExistUser = await usermodel.find({
