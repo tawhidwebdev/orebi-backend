@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const bcrypt = require('bcrypt');
-
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const UserSchema = new Schema(
   {
@@ -76,31 +76,46 @@ const UserSchema = new Schema(
     role: {
       type: String,
       enum: ["admin", "user", "merchant"],
-      default:"user"
+      default: "user",
     },
     refershToken: {
-      type: String
+      type: String,
     },
     avatar: {
-      type: String
-    }
+      type: String,
+    },
   },
   { timestamps: true }
 );
 
-// Password 
-UserSchema.pre('save', async function (next) {
-  if (this.isModified(this.Password)){
-    this.Password = await bcrypt.hash(this.Password, 10);
-    next()
-  }
-  next()
-})
+// Password hashing
+// UserSchema.pre("save", async function (next) {
+//   if (this.isModified(this.Password)) {
+//     this.Password = await bcrypt.hash(this.Password, 10);
+//     next();
+//   }
+//   next();
+// });
 
-UserSchema.methods.isValidatePassword = async (plainPassword) => {
-  const passwordResult = await bcrypt.compare(plainPassword, this.Password)
-  return passwordResult;
-}
+// Password validation
+// UserSchema.methods.isValidatePassword = async (plainPassword) => {
+//   const passwordResult = await bcrypt.compare(plainPassword, this.Password);
+//   return passwordResult;
+// };
 
-const usermodel = mongoose.model('user', UserSchema)
-module.exports = {usermodel}
+// Create access token
+// UserSchema.methods.generateAccessToken = async () => {
+//   const accessTooken = jwt.sign(
+//     {
+//       Email_Adress: this.Email_Adress,
+//       Telephone: this.Telephone,
+//     },
+//     process.env.ACCESS_SECRET_TOKEN,
+//     { expiresIn: process.env.EXPIRE_ACCESS_TOKEN }
+//   );
+
+//   return accessTooken;
+// };
+
+const usermodel = mongoose.model("user", UserSchema);
+module.exports = { usermodel };

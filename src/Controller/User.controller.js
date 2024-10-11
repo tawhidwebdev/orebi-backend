@@ -1,9 +1,11 @@
 const { asyncHandler } = require("../utils/asyncHandler");
-const { usermodel } = require("../Modle/User.modle");
+const { usermodel } = require("../Model/User.model");
 const { ApiError } = require("../utils/ApiError");
 const { ApiResponse } = require("../utils/ApiResponse");
 const { EmailChecker } = require("../utils/EmailChecker");
-const {PasswordChecker} = require("../utils/PasswordChecker")
+const { PasswordChecker } = require("../utils/PasswordChecker");
+const {bcryptPassword} = require("../Helper/helper.js")
+
 /**
  * todo: CreateUser controller implement
  * @param {{req.body}} req
@@ -83,7 +85,14 @@ const CreateUser = asyncHandler(async (req, res) => {
     if (!PasswordChecker(Password)) {
       return res
         .status(404)
-        .json(new ApiError(false, null, 400, `Minimum eight and maximum twenty characters, at least one upper-case letter, one lower-case letter, one number, and one special character`));
+        .json(
+          new ApiError(
+            false,
+            null,
+            400,
+            `Minimum eight and maximum twenty characters, at least one upper-case letter, one lower-case letter, one number, and one special character`
+          )
+        );
     }
     // Check if user alrady exist or not
     const ExistUser = await usermodel.find({
@@ -101,6 +110,9 @@ const CreateUser = asyncHandler(async (req, res) => {
           )
         );
     }
+    // Now make a password encrypt
+    const hashPassword = await bcryptPassword(Password)
+    
     const Users = await usermodel({
       FirstName,
       LastName,
@@ -111,8 +123,11 @@ const CreateUser = asyncHandler(async (req, res) => {
       City,
       Post_Code,
       Distict,
-      Password,
+      Password: hashPassword,
     }).save();
+
+    // Create access token
+    
     if (Users) {
       const recentCreateUser = await usermodel
         .find({ $or: [{ FirstName }, { Email_Adress }] })
