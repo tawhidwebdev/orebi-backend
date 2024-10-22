@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 
 const UserSchema = new Schema(
   {
@@ -88,34 +86,12 @@ const UserSchema = new Schema(
   { timestamps: true }
 );
 
-// Password hashing
-// UserSchema.pre("save", async function (next) {
-//   if (this.isModified(this.Password)) {
-//     this.Password = await bcrypt.hash(this.Password, 10);
-//     next();
-//   }
-//   next();
-// });
-
 // Password validation
-// UserSchema.methods.isValidatePassword = async (plainPassword) => {
-//   const passwordResult = await bcrypt.compare(plainPassword, this.Password);
-//   return passwordResult;
-// };
+UserSchema.methods.isValidatePassword = async (plainPassword) => {
+  const passwordResult = await bcrypt.compare(plainPassword, this.Password);
+  return passwordResult;
+};
 
-// Create access token
-// UserSchema.methods.generateAccessToken = async () => {
-//   const accessTooken = jwt.sign(
-//     {
-//       Email_Adress: this.Email_Adress,
-//       Telephone: this.Telephone,
-//     },
-//     process.env.ACCESS_SECRET_TOKEN,
-//     { expiresIn: process.env.EXPIRE_ACCESS_TOKEN }
-//   );
-
-//   return accessTooken;
-// };
 
 const usermodel = mongoose.model("user", UserSchema);
 module.exports = { usermodel };

@@ -4,7 +4,7 @@ const { ApiError } = require("../utils/ApiError");
 const { ApiResponse } = require("../utils/ApiResponse");
 const { EmailChecker } = require("../utils/EmailChecker");
 const { PasswordChecker } = require("../utils/PasswordChecker");
-const {bcryptPassword} = require("../Helper/helper.js")
+const {bcryptPassword, generateAccessToken} = require("../Helper/helper.js")
 
 /**
  * todo: CreateUser controller implement
@@ -126,7 +126,10 @@ const CreateUser = asyncHandler(async (req, res) => {
       Password: hashPassword,
     }).save();
 
-    // Create access token
+    // Generate access token
+    let accessTooken = await generateAccessToken(Email_Adress, Telephone);
+    console.log(accessTooken);
+    
     
     if (Users) {
       const recentCreateUser = await usermodel
