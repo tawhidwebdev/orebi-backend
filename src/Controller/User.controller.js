@@ -4,7 +4,7 @@ const { ApiError } = require("../utils/ApiError");
 const { ApiResponse } = require("../utils/ApiResponse");
 const { EmailChecker } = require("../utils/EmailChecker");
 const { PasswordChecker } = require("../utils/PasswordChecker");
-const {bcryptPassword, generateAccessToken} = require("../Helper/helper.js")
+const { bcryptPassword, generateAccessToken } = require("../Helper/helper.js");
 
 /**
  * todo: CreateUser controller implement
@@ -111,8 +111,9 @@ const CreateUser = asyncHandler(async (req, res) => {
         );
     }
     // Now make a password encrypt
-    const hashPassword = await bcryptPassword(Password)
-    
+    const hashPassword = await bcryptPassword(Password);
+
+    // Create a new users in database
     const Users = await usermodel({
       FirstName,
       LastName,
@@ -127,11 +128,12 @@ const CreateUser = asyncHandler(async (req, res) => {
     }).save();
 
     // Generate access token
-    let accessTooken = await generateAccessToken(Email_Adress, Telephone);
-    console.log(accessTooken);
-    
-    
-    if (Users) {
+    let accessToken = await generateAccessToken(Email_Adress, Telephone);
+
+    if (Users || accessToken) {
+      // Now set the token in database
+      const setToken = await usermodel.findOneAndUpdate(
+        {__id: user}, {}, {});
       const recentCreateUser = await usermodel
         .find({ $or: [{ FirstName }, { Email_Adress }] })
         .select("-Password, -_id");

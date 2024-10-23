@@ -68,7 +68,7 @@ const UserSchema = new Schema(
     Policy: {
       type: Boolean,
     },
-    Access_Tooken: {
+    token: {
       type: String,
     },
     role: {
