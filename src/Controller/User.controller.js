@@ -12,6 +12,11 @@ const { bcryptPassword, generateAccessToken } = require("../Helper/helper.js");
  * @param {{ }} res
  */
 
+const options = {
+  httpOnly: true,
+  secure: true,
+};
+
 const CreateUser = asyncHandler(async (req, res) => {
   // Send information into
   try {
@@ -133,12 +138,16 @@ const CreateUser = asyncHandler(async (req, res) => {
     if (Users || accessToken) {
       // Now set the token in database
       const setToken = await usermodel.findOneAndUpdate(
-        {__id: user}, {}, {});
+        { _id: Users._id },
+        { $set: { token: accessToken } },
+        { new: true }
+      );
       const recentCreateUser = await usermodel
         .find({ $or: [{ FirstName }, { Email_Adress }] })
         .select("-Password, -_id");
       return res
         .status(200)
+        .cookie("token", accessToken, options)
         .json(
           new ApiResponse(
             true,
