@@ -5,6 +5,7 @@ const { ApiResponse } = require("../utils/ApiResponse");
 const { EmailChecker } = require("../utils/EmailChecker");
 const { PasswordChecker } = require("../utils/PasswordChecker");
 const { bcryptPassword, generateAccessToken } = require("../Helper/helper.js");
+const { sendMail } = require("../utils/sendMail.js");
 
 /**
  * todo: CreateUser controller implement
@@ -135,12 +136,30 @@ const CreateUser = asyncHandler(async (req, res) => {
     // Generate access token
     let accessToken = await generateAccessToken(Email_Adress, Telephone);
 
-    if (Users || accessToken) {
+    // Send a user email
+    const otp = await MakeOtp();
+    const emailInfo = await sendMail(Email_Adress);
+    console.log(emailInfo);
+
+    if (Users || accessToken || emailInfo) {
       // Now set the token in database
       const setToken = await usermodel.findOneAndUpdate(
         { _id: Users._id },
         { $set: { token: accessToken } },
         { new: true }
+      );
+
+      // Now set the OTP
+      await usermodel.findByIdAndUpdate(
+        {
+          _id: Users._id,
+        },
+        {
+          $set: { OTP: otp },
+        },
+        {
+          new: true,
+        }
       );
       const recentCreateUser = await usermodel
         .find({ $or: [{ FirstName }, { Email_Adress }] })
@@ -159,8 +178,35 @@ const CreateUser = asyncHandler(async (req, res) => {
         );
     }
   } catch (error) {
-    console.log(error);
+    return res
+      .status(404)
+      .json(
+        new ApiError(
+          false,
+          null,
+          400,
+          `Registration controller error ${error} !!`
+        )
+      );
   }
 });
+
+// Login controller
+const loginController = async (req, res) => {
+  try {
+    console.log("Hello");
+  } catch (error) {
+    return res
+      .status(404)
+      .json(
+        new ApiError(
+          false,
+          null,
+          400,
+          `Login controller error ${error} !!`
+        )
+      );
+  }
+};
 
 module.exports = { CreateUser };
